@@ -3,3 +3,22 @@ docker run --name accounts-cont --rm  \
 --link postgresql \
 -e DATABASE_URI=postgresql://postgres:postgres@postgresql:5432/postgres \
 accounts
+
+this doesnot create a deployment (--dry-run=client) and instead redirects to yaml file
+
+oc create deployment accounts \
+  --image=us.icr.io/$SN_ICR_NAMESPACE/accounts:1 \
+  --replicas=3 \
+  --dry-run=client -o yaml > deploy/deployment.yaml
+
+
+oc describe secret postgresql
+oc create -f deploy/deployment.yaml 
+
+oc expose deploy accounts \
+  --type=ClusterIP \
+  --port=8080 \
+  --dry-run=client -o yaml > deploy/service.yaml
+
+oc create route edge accounts --service=accounts  -> expose your service using an OpenShift route
+oc get routes
