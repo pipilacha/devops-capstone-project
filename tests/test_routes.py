@@ -25,6 +25,8 @@ HTTPS_ENVIRON = {'wsgi.url_scheme': 'https'}
 ######################################################################
 #  T E S T   C A S E S
 ######################################################################
+
+
 class TestAccountService(TestCase):
     """Account Service Tests"""
 
@@ -215,7 +217,7 @@ class TestAccountService(TestCase):
         self.assertEquals(status.HTTP_200_OK, response.status_code)
         accounts = response.get_json()
         self.assertEqual(len(accounts), n)
-    
+
     def test_security_heards(self):
         """It should return security headers"""
         response = self.client.get(
@@ -229,7 +231,7 @@ class TestAccountService(TestCase):
             'Content-Security-Policy': 'default-src \'self\'; object-src \'none\'',
             'Referrer-Policy': 'strict-origin-when-cross-origin'
         }
-        for key,value in headers.items():
+        for key, value in headers.items():
             self.assertEquals(response.headers.get(key), value)
 
     def test_cors_policies(self):
@@ -240,6 +242,3 @@ class TestAccountService(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEquals(response.headers.get("Access-Control-Allow-Origin"), "*")
-
-            
-
