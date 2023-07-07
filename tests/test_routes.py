@@ -161,13 +161,13 @@ class TestAccountService(TestCase):
         self.assertEquals(status.HTTP_200_OK, response.status_code)
         updated_account = response.get_json()
         self.assertEqual(updated_account["name"], updated_name)
-    
+
     def test_update_nonexsiting_account(self):
         """It should return '404 - Account with id not found' when updating an account that doesnt exists """
         account = AccountFactory()
         response = self.client.put(
             f"{BASE_URL}/33",
-            json=account.serialize(), 
+            json=account.serialize(),
             content_type="application/json"
         )
         self.assertEquals(status.HTTP_404_NOT_FOUND, response.status_code)
@@ -204,7 +204,7 @@ class TestAccountService(TestCase):
         self.assertEqual(len(accounts), 0)
 
         n = 3
-        account = self._create_accounts(n)
+        self._create_accounts(n)
         response = self.client.get(
             f"{BASE_URL}",
             content_type="application/json"
@@ -212,6 +212,3 @@ class TestAccountService(TestCase):
         self.assertEquals(status.HTTP_200_OK, response.status_code)
         accounts = response.get_json()
         self.assertEqual(len(accounts), n)
-
-
-        
