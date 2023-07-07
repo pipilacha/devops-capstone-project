@@ -141,9 +141,33 @@ class TestAccountService(TestCase):
         self.assertEqual(read_account["date_joined"], str(account.date_joined))
 
     def test_read_nonexsiting_account(self):
-        """It should return '404 - Account with id not found' when account doesnt exists """
+        """It should return '404 - Account with id not found' when reading an account that doesnt exists """
         response = self.client.get(
             f"{BASE_URL}/33",
+            content_type="application/json"
+        )
+        self.assertEquals(status.HTTP_404_NOT_FOUND, response.status_code)
+
+    def test_update_an_account(self):
+        """It should update an account"""
+        updated_name = "Fantastic Beasts"
+        account = self._create_accounts(1)[0]
+        account.name = updated_name
+        response = self.client.put(
+            f"{BASE_URL}/{account.id}",
+            json=account.serialize(),
+            content_type="application/json"
+        )
+        self.assertEquals(status.HTTP_200_OK, response.status_code)
+        updated_account = response.get_json()
+        self.assertEqual(updated_account["name"], updated_name)
+    
+    def test_update_nonexsiting_account(self):
+        """It should return '404 - Account with id not found' when updating an account that doesnt exists """
+        account = AccountFactory()
+        response = self.client.put(
+            f"{BASE_URL}/33",
+            json=account.serialize(), 
             content_type="application/json"
         )
         self.assertEquals(status.HTTP_404_NOT_FOUND, response.status_code)
