@@ -33,12 +33,16 @@ tkn hub install task git-clone
 # to start a piplinerun
 tkn pipeline start cd-pipeline \
     -p repo-url="https://github.com/$GITHUB_ACCOUNT/devops-capstone-project.git" \
-    -p branch="main" \
+    -p branch=main \
+    -p build-image=image-registry.openshift-image-registry.svc:5000/$SN_ICR_NAMESPACE/accounts:1 \
     -w name=pipeline-workspace,claimName=pipelinerun-pvc \
     -s pipeline \
     --showlog
+    
 # to list pipelines
 tkn pipelinerun ls
 tkn pr logs --last #shows logs for the lastest run, if --last flag is not especified the name of the run must be passed
 
 tkn hub install task flake8
+
+tkn clustertask ls # to check  tekton hub tasks installed at cluster level
