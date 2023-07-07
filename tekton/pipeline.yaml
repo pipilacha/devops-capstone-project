@@ -3,6 +3,16 @@
 #   - git-clone
 #   - flake8
 #
+
+# 
+# Task Name 	Build After 	Message
+# clone 	- 	Cloning the repo $(params.repo-url)
+# lint 	clone 	Calling Flake8 linter
+# tests 	clone 	Running unit tests with PyUnit
+# build 	lint, tests 	Building image for $(params.repo-url)
+# deploy 	build 	Deploying $(params.branch) branch of $(params.repo-url)
+#
+
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
@@ -36,3 +46,17 @@ spec:
         value: $(params.branch)
       runAfter:
         - init
+    
+    - name: lint
+      workspaces:
+        - name: source
+          workspace: pipeline-workspace          
+      taskRef:
+        name: flake8
+      params:
+      - name: image
+        value: "python:3.8-slim"
+      - name: args
+        value: ["--count","--max-complexity=10","--max-line-length=127","--statistics"]
+      runAfter:
+        - clone

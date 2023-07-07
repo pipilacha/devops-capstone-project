@@ -22,3 +22,23 @@ oc expose deploy accounts \
 
 oc create route edge accounts --service=accounts  -> expose your service using an OpenShift route
 oc get routes
+
+
+oc create -f tekton/pvc.yaml
+oc apply -f tekton/tasks.yaml
+oc apply -f tekton/pipeline.yaml
+
+tkn hub install task git-clone
+
+# to start a piplinerun
+tkn pipeline start cd-pipeline \
+    -p repo-url="https://github.com/$GITHUB_ACCOUNT/devops-capstone-project.git" \
+    -p branch="main" \
+    -w name=pipeline-workspace,claimName=pipelinerun-pvc \
+    -s pipeline \
+    --showlog
+# to list pipelines
+tkn pipelinerun ls
+tkn pr logs --last #shows logs for the lastest run, if --last flag is not especified the name of the run must be passed
+
+tkn hub install task flake8
