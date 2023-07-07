@@ -1,0 +1,5 @@
+docker run --name accounts-cont --rm  \
+-p 8080:8080 \
+--link postgresql \
+-e DATABASE_URI=postgresql://postgres:postgres@postgresql:5432/postgres \
+accounts
